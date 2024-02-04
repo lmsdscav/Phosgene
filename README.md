@@ -1,34 +1,23 @@
-<img src="Leaf.png" alt="Leaf logo" align="right" width="200">
+<img src="Phosgene.png" alt="Leaf logo" align="right" width="200">
 <div align="center">
 
-## Leaf
+## Phosgene
 
-[![Github Actions Build](https://img.shields.io/github/actions/workflow/status/Winds-Studio/Leaf/build-1201.yml?branch=ver%2F1.20.1&style=flat-square)](https://github.com/Winds-Studio/Leaf/releases)
-
-<h5>Leaf is a drop-in replacement designed for removing some checks, customized, and high-performance built on top of <a href="https://github.com/GaleMC/Gale">Gale</a> with optimization from other forks.</h5>
-<h8>Logo designed by <a href="https://www.bing.com/new">New Bing</a></h8>
+<h8>Logo designed by lmsdscav</h8>
 </div>
 
 ## Features
- - **Fork of [Gale](https://github.com/GaleMC/Gale)** for better performance.
- - **Allows all characters as usernames**, including Chinese and other characters.
- - **Allows** players to connect the backend under proxy without enabling bunngecord mode.
- - **Allows tripwire dupe** by reverting tripwire bugfix patch of Paper.
- - **Configurable UseItem distance** for anarchy server.
- - **Latest dependencies**, keeping all dependencies in the newest version.
- - **More customized** relying on features of [Purpur](https://github.com/PurpurMC/Purpur).
- - **Maintenance friendly**, integrating with [Sentry](https://sentry.io/welcome/) of [Pufferfish](https://github.com/pufferfish-gg/Pufferfish/blob/ver/1.19/patches/server/0005-Add-Sentry.patch) to easy track all errors coming from your server in excruciating detail.
- - **Various optimization** blending from [other forks](https://github.com/Winds-Studio/Leaf#credits).
- - ...
+ - **Fork of [Leaf](https://github.com/Winds-Studio/Leaf)
+ - No fixes
 
 ## Contact
 
-- 📫 Discord: `dreeam___` | QQ: `2682173972`
+- QQ: 2577219357
 
 
 ## Downloads
 
-The Reobf JAR can be obtained in the [Releases](https://github.com/Winds-Studio/Leaf/releases)
+The Reobf JAR can be obtained in the [Releases](https://github.com/lmsdscav/Phosgene/releases)
 
 
 ## Building
@@ -52,6 +41,7 @@ Credits:
 -------------
 Thanks to these projects below. Leaf just mix some of their patches together. If these excellent projects haven't appeared, Leaf will not be great.
 
+- [Leaf](https://github.com/Winds-Studio/Leaf)
 - [Gale](https://github.com/GaleMC/Gale)
 - [Pufferfish](https://github.com/pufferfish-gg/Pufferfish)
 - [Purpur](https://github.com/PurpurMC/Purpur)
