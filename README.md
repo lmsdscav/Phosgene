@@ -4,8 +4,13 @@
 ## Phosgene
 
 <h8>Logo designed by lmsdscav</h8>
+<p>Other information goto branch(ver/1.20.1)</p>
 </div>
 
+## About Dev
+ - lmsdscav (Dev)
+ - Dreeam (Technical support)
+ - lib一抹阳光 (Psychological support)
 ## Features
  - **Fork of [Leaf](https://github.com/Winds-Studio/Leaf)
  - No fixes
@@ -14,20 +19,9 @@
 
 - QQ: 2577219357
 
-
 ## Downloads
 
 The Reobf JAR can be obtained in the [Releases](https://github.com/lmsdscav/Phosgene/releases)
-
-
-## Building
-
-Building a Paperclip JAR for distribution:
-
-```bash
-./gradlew applyPatches && ./gradlew createReobfPaperclipJar
-```
-
 
 ## License
 
