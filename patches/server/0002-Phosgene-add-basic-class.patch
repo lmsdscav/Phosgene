@@ -5,15 +5,16 @@ Subject: [PATCH] Phosgene add basic class
 
 
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index a572776603817fa4745b188651e3af61a9f4345e..291f5017081041479c9fe41db2ac0725e37420d0 100644
+index a572776603817fa4745b188651e3af61a9f4345e..95805fd29808a2c310748c2ab59a8a25dc413426 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -242,7 +242,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -241,8 +241,8 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+             SIMDDetection.initialize();
          } catch (Throwable ignored) {}
          // Gale start - Pufferfish - SIMD support
++        org.lxstd.phosgene.phosgeneConfig.load(); // Phosgene
          org.dreeam.leaf.LeafConfig.load(); // Leaf
 -
-+        org.lxstd.phosgene.phosgeneConfig.load(); // Phosgene
          this.setPvpAllowed(dedicatedserverproperties.pvp);
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
          this.setMotd(dedicatedserverproperties.motd);
