@@ -7,8 +7,8 @@ pluginManagement {
     }
 }
 
-rootProject.name = "Leaf"
-for (name in listOf("Leaf-API", "Leaf-Server")) {
+rootProject.name = "Phosgene"
+for (name in listOf("Phosgene-API", "Phosgene-Server")) {
     val projName = name.lowercase(Locale.ENGLISH)
     include(projName)
     findProject(":$projName")!!.projectDir = file(name)

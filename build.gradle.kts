@@ -57,24 +57,24 @@ subprojects {
 }
 
 paperweight {
-    serverProject.set(project(":leaf-server"))
+    serverProject.set(project(":phosgene-server"))
 
     remapRepo.set("https://maven.fabricmc.net/")
     decompileRepo.set("https://maven.quiltmc.org/")
 
-    useStandardUpstream("Gale") {
-        url.set(github("Dreeam-qwq", "Gale"))
-        ref.set(providers.gradleProperty("galeCommit"))
+    useStandardUpstream("Leaf") {
+        url.set(github("Winds-Studio", "Leaf"))
+        ref.set(providers.gradleProperty("leafCommit"))
 
         withStandardPatcher {
-            apiSourceDirPath.set("gale-api")
-            serverSourceDirPath.set("gale-server")
+            apiSourceDirPath.set("Leaf-API")
+            serverSourceDirPath.set("Leaf-Server")
 
             apiPatchDir.set(layout.projectDirectory.dir("patches/api"))
-            apiOutputDir.set(layout.projectDirectory.dir("Leaf-API"))
+            apiOutputDir.set(layout.projectDirectory.dir("Phosgene-API"))
 
             serverPatchDir.set(layout.projectDirectory.dir("patches/server"))
-            serverOutputDir.set(layout.projectDirectory.dir("Leaf-Server"))
+            serverOutputDir.set(layout.projectDirectory.dir("Phosgene-Server"))
         }
     }
 }
