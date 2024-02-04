@@ -56,10 +56,10 @@ index 0000000000000000000000000000000000000000..adb67e1df48bfe9f88d490e396d4e804
 +}
 diff --git a/src/main/java/org/lxstd/phosgene/phosgeneConfig.java b/src/main/java/org/lxstd/phosgene/phosgeneConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..d306d890c58675b4e5928f5b9d4f2a9bda65ddc5
+index 0000000000000000000000000000000000000000..a4493e64c6f52d3ebcbd276f90062c4e9189b24f
 --- /dev/null
 +++ b/src/main/java/org/lxstd/phosgene/phosgeneConfig.java
-@@ -0,0 +1,178 @@
+@@ -0,0 +1,179 @@
 +package org.lxstd.phosgene;
 +
 +import com.google.common.collect.ImmutableMap;
@@ -127,10 +127,11 @@ index 0000000000000000000000000000000000000000..d306d890c58675b4e5928f5b9d4f2a9b
 +                "Github Repo: https://github.com/lmsdscav/Phosgene",
 +                "QQ: 2577219357");
 +
-+        for (Method method : LeafConfig.class.getDeclaredMethods()) {
++        for (Method method : phosgeneConfig.class.getDeclaredMethods()) {
 +            if (Modifier.isStatic(method.getModifiers()) && Modifier.isPrivate(method.getModifiers()) && method.getParameterCount() == 0 &&
 +                    method.getReturnType() == Void.TYPE && !method.getName().startsWith("lambda")) {
 +                method.setAccessible(true);
++                MinecraftServer.LOGGER.info("Phosgene Configuration loaded.");
 +                try {
 +                    method.invoke(null);
 +                } catch (Throwable t) {
