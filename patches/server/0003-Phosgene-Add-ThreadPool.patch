@@ -5,7 +5,7 @@ Subject: [PATCH] Phosgene Add ThreadPool
 
 
 diff --git a/src/main/java/org/lxstd/phosgene/Phosgene.java b/src/main/java/org/lxstd/phosgene/Phosgene.java
-index adb67e1df48bfe9f88d490e396d4e8044b515500..91457f97871fa05c1fea3f8927e180894a7fde05 100644
+index adb67e1df48bfe9f88d490e396d4e8044b515500..71ac84d060ac4dc6dce696a8b2130cb794b4b157 100644
 --- a/src/main/java/org/lxstd/phosgene/Phosgene.java
 +++ b/src/main/java/org/lxstd/phosgene/Phosgene.java
 @@ -1,4 +1,13 @@
@@ -15,7 +15,7 @@ index adb67e1df48bfe9f88d490e396d4e8044b515500..91457f97871fa05c1fea3f8927e18089
 +import java.util.concurrent.Executors;
 +
  public class Phosgene {
-+    private static ExecutorService PhosgeneThreadPool= Executors.newCachedThreadPool();
++    private static ExecutorService PhosgeneThreadPool= Executors.newFixedThreadPool(phosgeneConfig.PoolCores);
 +    public static void pushTask(Runnable task){
 +        PhosgeneThreadPool.execute(task);
 +    }

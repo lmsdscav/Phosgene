@@ -5,10 +5,15 @@ Subject: [PATCH] Phosgene add basic class
 
 
 diff --git a/src/main/java/org/dreeam/leaf/LeafConfig.java b/src/main/java/org/dreeam/leaf/LeafConfig.java
-index bf4c5ce82ecee2e7040d6cea173df7827606a8b8..8687c9b779f569df90948773b7fd948ac169cbe5 100644
+index b1a6e5e4974202291019db7fd895b9b31d84f961..8571497187410a72b3cad7a7555ea545aee1f1c8 100644
 --- a/src/main/java/org/dreeam/leaf/LeafConfig.java
 +++ b/src/main/java/org/dreeam/leaf/LeafConfig.java
-@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
+@@ -9,10 +9,11 @@ import org.bukkit.Bukkit;
+ import org.bukkit.configuration.ConfigurationSection;
+ import org.bukkit.configuration.MemoryConfiguration;
+ import org.jetbrains.annotations.Nullable;
++import org.lxstd.phosgene.Phosgene;
++import org.lxstd.phosgene.phosgeneConfig;
  import org.simpleyaml.configuration.comments.CommentType;
  import org.simpleyaml.configuration.file.YamlFile;
  import org.simpleyaml.exceptions.InvalidConfigurationException;
@@ -16,6 +21,16 @@ index bf4c5ce82ecee2e7040d6cea173df7827606a8b8..8687c9b779f569df90948773b7fd948a
  import java.io.File;
  import java.io.IOException;
  import java.lang.reflect.Method;
+@@ -170,8 +171,7 @@ public class LeafConfig {
+ 
+     public static String serverModName = "Phosgene";
+     private static void serverModName() {
+-        //serverModName = getString("server-mod-name", serverModName);
+-        serverModName = "Phosgene";
++        serverModName = phosgeneConfig.serverModName;
+     }
+ 
+     public static boolean removeMojangUsernameCheck = true;
 diff --git a/src/main/java/org/lxstd/phosgene/Phosgene.java b/src/main/java/org/lxstd/phosgene/Phosgene.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..adb67e1df48bfe9f88d490e396d4e8044b515500
@@ -28,12 +43,185 @@ index 0000000000000000000000000000000000000000..adb67e1df48bfe9f88d490e396d4e804
 +}
 diff --git a/src/main/java/org/lxstd/phosgene/phosgeneConfig.java b/src/main/java/org/lxstd/phosgene/phosgeneConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..0464dad9329ad9ff682b254e8507a1367c952d0d
+index 0000000000000000000000000000000000000000..d306d890c58675b4e5928f5b9d4f2a9bda65ddc5
 --- /dev/null
 +++ b/src/main/java/org/lxstd/phosgene/phosgeneConfig.java
-@@ -0,0 +1,5 @@
+@@ -0,0 +1,178 @@
 +package org.lxstd.phosgene;
 +
++import com.google.common.collect.ImmutableMap;
++import net.minecraft.core.registries.BuiltInRegistries;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.world.entity.EntityType;
++import org.bukkit.Bukkit;
++import org.bukkit.configuration.ConfigurationSection;
++import org.bukkit.configuration.MemoryConfiguration;
++import org.dreeam.leaf.LeafConfig;
++import org.jetbrains.annotations.Nullable;
++import org.simpleyaml.configuration.comments.CommentType;
++import org.simpleyaml.configuration.file.YamlFile;
++import org.simpleyaml.exceptions.InvalidConfigurationException;
++
++import java.io.File;
++import java.io.IOException;
++import java.lang.reflect.Method;
++import java.lang.reflect.Modifier;
++import java.util.Collections;
++import java.util.List;
++import java.util.Locale;
++import java.util.Map;
++import java.util.concurrent.ThreadLocalRandom;
++import java.util.logging.Level;
++
 +public class phosgeneConfig {
-+    // no need right now
++    private static final YamlFile config = new YamlFile();
++    private static int updates = 0;
++
++    private static ConfigurationSection convertToBukkit(org.simpleyaml.configuration.ConfigurationSection section) {
++        ConfigurationSection newSection = new MemoryConfiguration();
++        for (String key : section.getKeys(false)) {
++            if (section.isConfigurationSection(key)) {
++                newSection.set(key, convertToBukkit(section.getConfigurationSection(key)));
++            } else {
++                newSection.set(key, section.get(key));
++            }
++        }
++        return newSection;
++    }
++
++    public static ConfigurationSection getConfigCopy() {
++        return convertToBukkit(config);
++    }
++
++    public static int getUpdates() {
++        return updates;
++    }
++
++    public static void load() throws IOException {
++        File configFile = new File("phosgene.yml");
++
++        if (configFile.exists()) {
++            try {
++                config.load(configFile);
++            } catch (InvalidConfigurationException e) {
++                throw new IOException(e);
++            }
++        }
++
++        getString("info.version", "1");
++        setComment("info",
++                "Phosgene Configuration",
++                "Github Repo: https://github.com/lmsdscav/Phosgene",
++                "QQ: 2577219357");
++
++        for (Method method : LeafConfig.class.getDeclaredMethods()) {
++            if (Modifier.isStatic(method.getModifiers()) && Modifier.isPrivate(method.getModifiers()) && method.getParameterCount() == 0 &&
++                    method.getReturnType() == Void.TYPE && !method.getName().startsWith("lambda")) {
++                method.setAccessible(true);
++                try {
++                    method.invoke(null);
++                } catch (Throwable t) {
++                    MinecraftServer.LOGGER.warn("Failed to load configuration option from " + method.getName(), t);
++                }
++            }
++        }
++
++        updates++;
++
++        config.save(configFile);
++
++    }
++
++    private static void setComment(String key, String... comment) {
++        if (config.contains(key)) {
++            config.setComment(key, String.join("\n", comment), CommentType.BLOCK);
++        }
++    }
++
++    private static void ensureDefault(String key, Object defaultValue, String... comment) {
++        if (!config.contains(key)) {
++            config.set(key, defaultValue);
++            config.setComment(key, String.join("\n", comment), CommentType.BLOCK);
++        }
++    }
++
++    private static void set(String key, Object defaultValue) {
++        config.addDefault(key, defaultValue);
++        config.set(key, defaultValue);
++    }
++
++    private static boolean getBoolean(String key, boolean defaultValue, String... comment) {
++        return getBoolean(key, null, defaultValue, comment);
++    }
++
++    private static boolean getBoolean(String key, @Nullable String oldKey, boolean defaultValue, String... comment) {
++        ensureDefault(key, defaultValue, comment);
++        return config.getBoolean(key, defaultValue);
++    }
++
++    private static int getInt(String key, int defaultValue, String... comment) {
++        return getInt(key, null, defaultValue, comment);
++    }
++
++    private static int getInt(String key, @Nullable String oldKey, int defaultValue, String... comment) {
++        ensureDefault(key, defaultValue, comment);
++        return config.getInt(key, defaultValue);
++    }
++
++    private static double getDouble(String key, double defaultValue, String... comment) {
++        return getDouble(key, null, defaultValue, comment);
++    }
++
++    private static double getDouble(String key, @Nullable String oldKey, double defaultValue, String... comment) {
++        ensureDefault(key, defaultValue, comment);
++        return config.getDouble(key, defaultValue);
++    }
++
++    private static String getString(String key, String defaultValue, String... comment) {
++        return getOldString(key, null, defaultValue, comment);
++    }
++
++    private static String getOldString(String key, @Nullable String oldKey, String defaultValue, String... comment) {
++        ensureDefault(key, defaultValue, comment);
++        return config.getString(key, defaultValue);
++    }
++
++    private static List<String> getStringList(String key, List<String> defaultValue, String... comment) {
++        return getStringList(key, null, defaultValue, comment);
++    }
++
++    private static List<String> getStringList(String key, @Nullable String oldKey, List<String> defaultValue, String... comment) {
++        ensureDefault(key, defaultValue, comment);
++        return config.getStringList(key);
++    }
++
++    static Map<String, Object> getMap(String key, Map<String, Object> defaultValue) {
++        if (defaultValue != null && getConfigCopy().getConfigurationSection(key) == null) {
++            config.addDefault(key, defaultValue);
++            return defaultValue;
++        }
++        return toMap(getConfigCopy().getConfigurationSection(key));
++    }
++
++    private static Map<String, Object> toMap(ConfigurationSection section) {
++        ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
++        if (section != null) {
++            for (String key : section.getKeys(false)) {
++                Object obj = section.get(key);
++                if (obj != null) {
++                    builder.put(key, obj instanceof ConfigurationSection val ? toMap(val) : obj);
++                }
++            }
++        }
++        return builder.build();
++    }
++
++    public static String serverModName = "Phosgene";
++    private static void serverModName() {
++        serverModName = getString("server-mod-name","Phosgene","Server brand name.");
++    }
++    public static Integer PoolCores=1;
++    private static void perf() {
++        PoolCores = getInt("max-pool-threads",1,"Max core");
++    }
 +}
