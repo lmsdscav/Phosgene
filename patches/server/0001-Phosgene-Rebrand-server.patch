@@ -26,3 +26,389 @@ index 99cf0bebf6bd1579c1f347e0c1750c7b13f74566..2fd675b842c150475458c99c7d21f698
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
+diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
+index 1ea04a20247c7154fc3e59693f28b993ff78e2b8..4ab40c863bbaf250101ba1d38dded80ffe73dacb 100644
+--- a/src/main/java/com/destroystokyo/paper/Metrics.java
++++ b/src/main/java/com/destroystokyo/paper/Metrics.java
+@@ -593,7 +593,7 @@ public class Metrics {
+             boolean logFailedRequests = config.getBoolean("logFailedRequests", false);
+             // Only start Metrics, if it's enabled in the config
+             if (config.getBoolean("enabled", true)) {
+-                Metrics metrics = new Metrics("Leaf", serverUUID, logFailedRequests, Bukkit.getLogger()); // Gale - branding changes - metrics // Leaf - rebrand
++                Metrics metrics = new Metrics("Phosgene", serverUUID, logFailedRequests, Bukkit.getLogger()); // Gale - branding changes - metrics // Leaf - rebrand
+ 
+                 metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
+                     String minecraftVersion = Bukkit.getVersion();
+@@ -603,15 +603,15 @@ public class Metrics {
+ 
+                 metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
+                 metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : "offline"));
+-                final String leafVersion; // Gale - branding changes - metrics // Leaf - rebrand
++                final String phosgeneVersion; // Gale - branding changes - metrics // Leaf - rebrand // Phosgene rebrand
+                 final String implVersion = org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion();
+                 if (implVersion != null) {
+                     final String buildOrHash = implVersion.substring(implVersion.lastIndexOf('-') + 1);
+-                    leafVersion = "git-Leaf-%s-%s".formatted(Bukkit.getServer().getMinecraftVersion(), buildOrHash); // Gale - branding changes - metrics // Leaf - rebrand
++                    phosgeneVersion = "git-Phosgene-%s-%s".formatted(Bukkit.getServer().getMinecraftVersion(), buildOrHash); // Gale - branding changes - metrics // Leaf - rebrand
+                 } else {
+-                    leafVersion = "unknown"; // Gale - branding changes - metrics // Leaf - rebrand
++                    phosgeneVersion = "unknown"; // Gale - branding changes - metrics // Leaf - rebrand // Phosgene rebrand
+                 }
+-                metrics.addCustomChart(new Metrics.SimplePie("leaf_version", () -> leafVersion)); // Gale - branding changes - metrics // Leaf - rebrand
++                metrics.addCustomChart(new Metrics.SimplePie("phosgene_version", () -> phosgeneVersion)); // Gale - branding changes - metrics // Leaf - rebrand
+ 
+                 metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+                     Map<String, Map<String, Integer>> map = new HashMap<>(2); // Gale - metrics - reduce HashMap capacity
+diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
+index b5f3f213da8a40d5184098af017c8e2669c3e58c..d31ecbfed489581272c570efc7997812ea80ea4d 100644
+--- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
++++ b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
+@@ -17,7 +17,7 @@ public final class PaperConsole extends SimpleTerminalConsole {
+     @Override
+     protected LineReader buildReader(LineReaderBuilder builder) {
+         builder
+-                .appName("Leaf") // Gale - branding changes // Leaf
++                .appName("Phosgene") // Gale - branding changes // Leaf // Phosgene
+                 .variable(LineReader.HISTORY_FILE, java.nio.file.Paths.get(".console_history"))
+                 .completer(new ConsoleCommandCompleter(this.server))
+                 .option(LineReader.Option.COMPLETE_IN_WORD, true);
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index b007d9fb7beb350424c14d5b1ac05050e9d92cef..782083867f9be8286a92d722c42b77164ab0435a 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -912,7 +912,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             We do not want people to report thread issues to Paper,
+             but we do want people to report thread issues to Gale.
+              */
+-            MinecraftServer.LOGGER.info("Stopping main thread (Ignore any thread death message you see! - DO NOT REPORT THREAD DEATH TO PAPER - If you think this is a Leaf bug, please report it at https://github.com/Winds-Studio/Leaf/issues )"); // Leaf
++            MinecraftServer.LOGGER.info("Stopping main thread (Ignore any thread death message you see! - DO NOT REPORT THREAD DEATH TO PAPER - If you think this is a Phosgene bug, please report it at https://github.com/lmsdscav/Phosgene/issues )"); // Leaf // Phosgene
+             // Gale end - branding changes
+             while (this.getRunningThread().isAlive()) {
+                 this.getRunningThread().stop();
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 164f07df76b10521b0f946258d4667ac13220fa1..7734cc8c5e031a9b453da3f90f9d42588213c177 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -268,7 +268,7 @@ import javax.annotation.Nullable; // Paper
+ import javax.annotation.Nonnull; // Paper
+ 
+ public final class CraftServer implements Server {
+-    private final String serverName = "Leaf"; // Paper // Gale - branding changes // Leaf
++    private final String serverName = "Phosgene"; // Paper // Gale - branding changes // Leaf // Phosgene
+     private final String serverVersion;
+     private final String bukkitVersion = Versioning.getBukkitVersion();
+     private final Logger logger = Logger.getLogger("Minecraft");
+diff --git a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
+index 0756ab78eaae2943e1f6594c0095421affeccfcd..24cbb1acadbc7748dbdf9537ad97d613eaffb5f0 100644
+--- a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
++++ b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
+@@ -500,7 +500,7 @@ public class CraftScheduler implements BukkitScheduler {
+                 this.parsePending();
+             } else {
+                 // this.debugTail = this.debugTail.setNext(new CraftAsyncDebugger(currentTick + CraftScheduler.RECENT_TICKS, task.getOwner(), task.getTaskClass())); // Paper
+-                task.getOwner().getLogger().log(Level.SEVERE, "Unexpected Async Task in the Sync Scheduler. Report this to Leaf"); // Paper // Gale - branding changes // Leaf
++                task.getOwner().getLogger().log(Level.SEVERE, "Unexpected Async Task in the Sync Scheduler. Report this to Phosgene"); // Paper // Gale - branding changes // Leaf // Phosgene
+                 // We don't need to parse pending
+                 // (async tasks must live with race-conditions if they attempt to cancel between these few lines of code)
+             }
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index 17e3ee3a73a2347e9f0baa0ed1640a3b0e75ed16..0ab762fa90a82b379d711e887a4ee5c84a45e3ed 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.dreeam.leaf/leaf-api/pom.properties"); // Gale - branding changes // Leaf
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.lxstd.phosgene/phosgene-api/pom.properties"); // Gale - branding changes // Leaf
+         Properties properties = new Properties();
+ 
+         if (stream != null) {
+diff --git a/src/main/java/org/dreeam/leaf/LeafConfig.java b/src/main/java/org/dreeam/leaf/LeafConfig.java
+index bf4c5ce82ecee2e7040d6cea173df7827606a8b8..b1a6e5e4974202291019db7fd895b9b31d84f961 100644
+--- a/src/main/java/org/dreeam/leaf/LeafConfig.java
++++ b/src/main/java/org/dreeam/leaf/LeafConfig.java
+@@ -168,9 +168,10 @@ public class LeafConfig {
+         return builder.build();
+     }
+ 
+-    public static String serverModName = "Leaf";
++    public static String serverModName = "Phosgene";
+     private static void serverModName() {
+-        serverModName = getString("server-mod-name", serverModName);
++        //serverModName = getString("server-mod-name", serverModName);
++        serverModName = "Phosgene";
+     }
+ 
+     public static boolean removeMojangUsernameCheck = true;
+diff --git a/src/main/java/org/galemc/gale/version/GaleVersionFetcher.java b/src/main/java/org/galemc/gale/version/GaleVersionFetcher.java
+index 7d45fa394da75ae3d0c7afc14a7a6fe383fc0197..206563831e5d726fc68fcb8793031171057dab7f 100644
+--- a/src/main/java/org/galemc/gale/version/GaleVersionFetcher.java
++++ b/src/main/java/org/galemc/gale/version/GaleVersionFetcher.java
+@@ -5,7 +5,7 @@ package org.galemc.gale.version;
+ public class GaleVersionFetcher extends AbstractPaperVersionFetcher {
+ 
+     public GaleVersionFetcher() {
+-        super("ver/1.20.1", "https://github.com/Winds-Studio/Leaf", "Leaf", "Winds-Studio", "Winds-Studio", "Leaf"); // Leaf
++        super("ver/1.20.1", "https://github.com/lmsdscav/Phosgene", "Phosgene", "lmsdscav", "lmsdscav", "Phosgene"); // Leaf
+     }
+ 
+ }
+diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
+index cf6067f3dd8b9e1d46cf3c39b75171c4d048ae26..e8e466dd639ee611c26eb0e92c2cbaff66fbf1b7 100644
+--- a/src/main/java/org/spigotmc/WatchdogThread.java
++++ b/src/main/java/org/spigotmc/WatchdogThread.java
+@@ -160,15 +160,15 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
+                 We do not want people to report thread issues to Paper,
+                 but we do want people to report thread issues to Gale.
+                  */
+-                log.log( Level.SEVERE, "The server has stopped responding! This is (probably) not a Paper bug. This could be a Leaf bug." ); // Paper // Leaf
++                log.log( Level.SEVERE, "The server has stopped responding! This is (probably) not a Paper bug. This could be a Phosgene bug." ); // Paper // Leaf
+                 // Gale end - branding changes
+                 log.log( Level.SEVERE, "If you see a plugin in the Server thread dump below, then please report it to that author" );
+                 log.log( Level.SEVERE, "\t *Especially* if it looks like HTTP or MySQL operations are occurring" );
+                 log.log( Level.SEVERE, "If you see a world save or edit, then it means you did far more than your server can handle at once" );
+                 log.log( Level.SEVERE, "\t If this is the case, consider increasing timeout-time in spigot.yml but note that this will replace the crash with LARGE lag spikes" );
+-                log.log( Level.SEVERE, "If you are unsure or think this is a Leaf bug, please report this to https://github.com/Winds-Studio/Leaf/issues - and if you think this is a Paper bug, please report this to https://github.com/PaperMC/Paper/issues" ); // Gale - branding changes // Leaf
++                log.log( Level.SEVERE, "If you are unsure or think this is a Leaf bug, please report this to https://github.com/lmsdscav/Phosgene/issues - and if you think this is a Paper bug, please report this to https://github.com/PaperMC/Paper/issues" ); // Gale - branding changes // Leaf
+                 log.log( Level.SEVERE, "Be sure to include ALL relevant console errors and Minecraft crash reports" );
+-                log.log( Level.SEVERE, "Leaf version: " + Bukkit.getServer().getVersion() ); // Gale - branding changes // Leaf
++                log.log( Level.SEVERE, "Phosgene version: " + Bukkit.getServer().getVersion() ); // Gale - branding changes // Leaf
+                 //
+                 if ( net.minecraft.world.level.Level.lastPhysicsProblem != null )
+                 {
+@@ -196,13 +196,13 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
+                     We do not want people to report thread issues to Paper,
+                     but we do want people to report thread issues to Gale.
+                      */
+-                    log.log(Level.SEVERE, "--- DO NOT REPORT THIS TO PAPER - If you think this is a Leaf bug, please report it at https://github.com/Winds-Studio/Leaf/issues - THIS IS NOT A PAPER BUG OR CRASH - " + Bukkit.getServer().getVersion() + " ---"); // Leaf
++                    log.log(Level.SEVERE, "--- DO NOT REPORT THIS TO PAPER - If you think this is a Phosgene bug, please report it at https://github.com/lmsdscav/Phosgene/issues - THIS IS NOT A PAPER BUG OR CRASH - " + Bukkit.getServer().getVersion() + " ---"); // Leaf
+                     // Gale end - branding changes
+                     log.log(Level.SEVERE, "The server has not responded for " + (currentTime - lastTick) / 1000 + " seconds! Creating thread dump");
+                 }
+                 // Paper end - Different message for short timeout
+                 log.log( Level.SEVERE, "------------------------------" );
+-                log.log( Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Leaf!):" ); // Paper // Gale - branding changes // Leaf
++                log.log( Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Phosgene!):" ); // Paper // Gale - branding changes // Leaf
+                 io.papermc.paper.chunk.system.scheduling.ChunkTaskScheduler.dumpAllChunkLoadInfo(isLongTimeout); // Paper // Paper - rewrite chunk system
+                 this.dumpTickingInfo(); // Paper - log detailed tick information
+                 WatchdogThread.dumpThread( ManagementFactory.getThreadMXBean().getThreadInfo( MinecraftServer.getServer().serverThread.getId(), Integer.MAX_VALUE ), log );
+@@ -223,7 +223,7 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
+                     We do not want people to report thread issues to Paper,
+                     but we do want people to report thread issues to Gale.
+                      */
+-                    log.log(Level.SEVERE, "--- DO NOT REPORT THIS TO PAPER - If you think this is a Leaf bug, please report it at https://github.com/Winds-Studio/Leaf/issues - THIS IS NOT A PAPER BUG OR CRASH ---"); // Leaf
++                    log.log(Level.SEVERE, "--- DO NOT REPORT THIS TO PAPER - If you think this is a Phosgene bug, please report it at https://github.com/lmsdscav/Phosgene/issues - THIS IS NOT A PAPER BUG OR CRASH ---"); // Leaf
+                     // Gale end - branding changes
+                 }
+ 
+diff --git a/src/main/resources/logo.png b/src/main/resources/logo.png
+old mode 100644
+new mode 100755
+index 0956ce407eed35c25e511918d385b4fa402e17d5..7ed7e63a5970c84236bc5fc008315ee3f4750130
+GIT binary patch
+literal 1574
+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
+P4rq_R?+%{|Qf$V*OqRj`
+
+literal 8808
+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
+
