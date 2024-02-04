@@ -39,7 +39,7 @@ Also see [PaperMC/Paper](https://github.com/PaperMC/Paper) and [PaperMC/Paperwei
 
 Credits:
 -------------
-Thanks to these projects below. Leaf just mix some of their patches together. If these excellent projects haven't appeared, Leaf will not be great.
+All authors that Leaf thanked we will also thank.
 
 - [Leaf](https://github.com/Winds-Studio/Leaf)
 - [Gale](https://github.com/GaleMC/Gale)
