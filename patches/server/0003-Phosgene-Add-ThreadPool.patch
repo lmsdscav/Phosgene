@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lmsdscav <lmsdscavmc@hotmail.com>
+Date: Sun, 4 Feb 2024 16:20:51 +0800
+Subject: [PATCH] Phosgene Add ThreadPool
+
+
+diff --git a/src/main/java/org/lxstd/phosgene/Phosgene.java b/src/main/java/org/lxstd/phosgene/Phosgene.java
+index adb67e1df48bfe9f88d490e396d4e8044b515500..91457f97871fa05c1fea3f8927e180894a7fde05 100644
+--- a/src/main/java/org/lxstd/phosgene/Phosgene.java
++++ b/src/main/java/org/lxstd/phosgene/Phosgene.java
+@@ -1,4 +1,13 @@
+ package org.lxstd.phosgene;
+ 
++import java.util.concurrent.ExecutorService;
++import java.util.concurrent.Executors;
++
+ public class Phosgene {
++    private static ExecutorService PhosgeneThreadPool= Executors.newCachedThreadPool();
++    public static void pushTask(Runnable task){
++        PhosgeneThreadPool.execute(task);
++    }
++
++
+ }

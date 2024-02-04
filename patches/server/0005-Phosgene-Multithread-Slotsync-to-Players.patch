@@ -1,0 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lmsdscav <lmsdscavmc@hotmail.com>
+Date: Sun, 4 Feb 2024 16:35:13 +0800
+Subject: [PATCH] Phosgene Multithread Slotsync to Players
+
+
+diff --git a/src/main/java/net/minecraft/world/inventory/AbstractContainerMenu.java b/src/main/java/net/minecraft/world/inventory/AbstractContainerMenu.java
+index 662f3eee6ff17e0b0191b1c59066465db818ed2b..38b1049e387fef86cfeb755097aa5b6b9b3ecd40 100644
+--- a/src/main/java/net/minecraft/world/inventory/AbstractContainerMenu.java
++++ b/src/main/java/net/minecraft/world/inventory/AbstractContainerMenu.java
+@@ -33,6 +33,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.level.block.Block;
+ import net.minecraft.world.level.block.entity.BlockEntity;
++import org.lxstd.phosgene.Phosgene;
+ import org.slf4j.Logger;
+ 
+ // CraftBukkit start
+@@ -242,7 +243,11 @@ public abstract class AbstractContainerMenu {
+             Supplier<ItemStack> supplier = Suppliers.memoize(itemstack::copy);
+ 
+             this.triggerSlotListeners(i, itemstack, supplier);
+-            this.synchronizeSlotToRemote(i, itemstack, supplier);
++            //this.synchronizeSlotToRemote(i, itemstack, supplier);
++            //Phosgene Fix START
++            int finalI = i;
++            Phosgene.pushTask(()->this.synchronizeSlotToRemote(finalI, itemstack, supplier));
++            //Phosgene Fix END
+         }
+ 
+         this.synchronizeCarriedToRemote();
+@@ -255,7 +260,9 @@ public abstract class AbstractContainerMenu {
+                 this.updateDataSlotListeners(i, j);
+             }
+ 
+-            this.synchronizeDataSlotToRemote(i, j);
++            //this.synchronizeDataSlotToRemote(i, j);
++            int finalI1 = i;
++            Phosgene.pushTask(()->this.synchronizeDataSlotToRemote(finalI1, j));
+         }
+ 
+     }

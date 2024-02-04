@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lmsdscav <lmsdscavmc@hotmail.com>
+Date: Sun, 4 Feb 2024 16:21:47 +0800
+Subject: [PATCH] Phosgene Rebrand Modname in Leaf
+
+
+diff --git a/src/main/java/org/dreeam/leaf/LeafConfig.java b/src/main/java/org/dreeam/leaf/LeafConfig.java
+index 8687c9b779f569df90948773b7fd948ac169cbe5..2dc1567c03fd1771281d20e6a5342cd2e6e900ce 100644
+--- a/src/main/java/org/dreeam/leaf/LeafConfig.java
++++ b/src/main/java/org/dreeam/leaf/LeafConfig.java
+@@ -167,7 +167,7 @@ public class LeafConfig {
+         return builder.build();
+     }
+ 
+-    public static String serverModName = "Leaf";
++    public static String serverModName = "Phosgene";
+     private static void serverModName() {
+         serverModName = getString("server-mod-name", serverModName);
+     }
